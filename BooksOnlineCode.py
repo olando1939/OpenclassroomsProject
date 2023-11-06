@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import csv
 import os
 
-url = "http://books.toscrape.com/catalogue/1st-to-die-womens-murder-club-1_2/index.html"
+url = "http://books.toscrape.com/catalogue/a-spys-devotion-the-regency-spies-of-london-1_3/index.html"
 def extract_book_data(book_url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content,'html.parser')
@@ -27,22 +27,54 @@ def extract_book_data(book_url):
     headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax", "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating", "image_url"]
     headers_content = {'product_page_url': url, 'universal_product_code(upc)': universal_product_code, 'book_title': book_title, 'price_including_tax': price_including_tax, 'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available, 'product_description': product_description, 'category': category, 'review_rating': review_rating, 'image_url': image_url}
 
-    if os.path.isfile("books_online.csv"):
-        with open("books_online.csv", "a", newline="") as csvfile:
+    if os.path.isfile("categories_books_online.csv"):
+        with open("categories_books_online.csv", "a", newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writerow(headers_content)
     else:
-        with open("books_online.csv","w",newline="") as csvfile:
+        with open("categories_books_online.csv","w",newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writeheader()
             writer.writerow(headers_content)
-
 
     return book_data
 
 extract_book_data(url)
 
+def extract_all_books_category_url(website_url):
+    result = requests.get(website_url)
+    soup = BeautifulSoup(result.content, 'html.parser')
 
+    book_categories = soup.find("div", class_="side_categories").find_all("a")
+    for category in book_categories:
+        name = (category.get_text(strip = True))
+        link = category["href"]
+        categoryURLs = (website_url.replace('index.html','')+link)
+        print(name, categoryURLs)
+
+
+    for i in range(1, 3):
+        categoryURL = "http://books.toscrape.com/catalogue/category/books/historical-fiction_4/page-" + str(i) + '.html'
+        result = requests.get(categoryURL)
+        print(categoryURL)
+
+        soup = BeautifulSoup(result.content, 'html.parser')
+
+        category_book_url_list = soup.find_all('h3')
+
+        for url_links in category_book_url_list:
+            book_urls = (url_links.find('a').get('href').replace('../../..', 'http://books.toscrape.com/catalogue'))
+            print(book_urls)
+
+    book_url_list = {'category_url': book_urls}
+
+    return book_url_list
+
+website_url = 'http://books.toscrape.com/index.html'
+extract_all_books_category_url(website_url)
+
+
+"""
 def extract_book_category_url(category_url):
     for i in range(1, 3):
         categoryURL = 'http://books.toscrape.com/catalogue/category/books/mystery_3/page-' + str(i) + '.html'
@@ -64,8 +96,7 @@ def extract_book_category_url(category_url):
 
 categoryURL = "http://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
 extract_book_category_url(categoryURL)
-
-
+"""
 
 
 
