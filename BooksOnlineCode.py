@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import csv
 import os
 
+"""
 url = "http://books.toscrape.com/catalogue/a-spys-devotion-the-regency-spies-of-london-1_3/index.html"
 def extract_book_data(book_url):
     page = requests.get(url)
@@ -40,8 +41,11 @@ def extract_book_data(book_url):
     return book_data
 
 extract_book_data(url)
+for book_url in books_urls:
+    book_data = extract_book_data(book_url)
+"""
 
-def extract_all_books_category_url(website_url):
+def extract_category_url(website_url):
     result = requests.get(website_url)
     soup = BeautifulSoup(result.content, 'html.parser')
 
@@ -50,53 +54,37 @@ def extract_all_books_category_url(website_url):
         name = (category.get_text(strip = True))
         link = category["href"]
         categoryURLs = (website_url.replace('index.html','')+link)
-        print(name, categoryURLs)
-
-
-    for i in range(1, 3):
-        categoryURL = "http://books.toscrape.com/catalogue/category/books/historical-fiction_4/page-" + str(i) + '.html'
-        result = requests.get(categoryURL)
-        print(categoryURL)
-
-        soup = BeautifulSoup(result.content, 'html.parser')
-
-        category_book_url_list = soup.find_all('h3')
-
-        for url_links in category_book_url_list:
-            book_urls = (url_links.find('a').get('href').replace('../../..', 'http://books.toscrape.com/catalogue'))
-            print(book_urls)
-
-    book_url_list = {'category_url': book_urls}
-
-    return book_url_list
+        return categoryURLs
+        #print(name,'',categoryURLs)
 
 website_url = 'http://books.toscrape.com/index.html'
-extract_all_books_category_url(website_url)
+extract_category_url(website_url)
 
+def get_books_url_by_category(category_url):
+    result = requests.get(category_url)
+    soup = BeautifulSoup(result.content, 'html.parser')
 
-"""
-def extract_book_category_url(category_url):
-    for i in range(1, 3):
-        categoryURL = 'http://books.toscrape.com/catalogue/category/books/mystery_3/page-' + str(i) + '.html'
-        result = requests.get(categoryURL)
-        #print(categoryURL)
+    while True:
+        response = requests.get(category_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-        soup = BeautifulSoup(result.content, 'html.parser')
+        footer_element = soup.select_one('li.current')
+        #print(footer_element.text.strip())
+
+        next_page_element = soup.select_one('li.next > a')
 
         category_book_url_list = soup.find_all('h3')
-
         for url_links in category_book_url_list:
-            book_urls = (url_links.find('a').get('href').replace('../../..', 'http://books.toscrape.com/catalogue'))
+            book_urls = (url_links.find('a').get('href').replace('../..', 'http://books.toscrape.com/catalogue'))
             print(book_urls)
+            if next_page_element:
+                next_page_url = next_page_element.get('href')
+            else:
+                break
 
-    book_url_list = {'category_url': book_urls}
 
-
-    return book_url_list
-
-categoryURL = "http://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-extract_book_category_url(categoryURL)
-"""
+category_url = extract_category_url(website_url)
+get_books_url_by_category(category_url)
 
 
 
