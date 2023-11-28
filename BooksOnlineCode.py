@@ -4,11 +4,68 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-
+import shutil
 
 url = "http://books.toscrape.com/"
 category_url = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
 
+
+"""
+#download one image file
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
+
+images = soup.findAll('img')
+example = images[0]
+url_ext = example.attrs['src']
+full_url = url + url_ext
+print(full_url)
+title = soup.select('h3')[0].text
+print(title)
+result = requests.get(full_url, stream=True)
+
+if result.status_code == 200:
+   with open(title + "-" + "book_image_file.jpg", 'wb') as f:
+        shutil.copyfileobj(result.raw, f)
+
+"""
+
+
+media = []
+#image_links = url
+
+while url != None:
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    body = soup.find('body')
+
+    next_page = soup.find('li', {'class': 'next'})
+
+    articles = body.find_all('img')
+    for link in articles:
+        page = link.attrs['src']
+        page_link = (url + page)
+        media.append(page_link)
+        #print(page_link)
+
+    if next_page != None:
+        next_page_element = next_page.find('a').get('href')
+        image_links = url.replace('index.html', str(next_page_element))
+        print(next_page)
+    else:
+        image_links == None
+        break
+    
+    
+    result = requests.get(page_link, stream=True)
+    if result.status_code == 200:
+        with open("book_image_file.jpg", 'wb') as f:
+            shutil.copyfileobj(result.raw, f)
+
+
+
+
+"""
 #get_all_categories
 def get_all_book_categories():
     result = requests.get(url)
@@ -28,8 +85,9 @@ all_urls = get_all_book_categories()
 print(all_urls)
 
 get_all_book_categories()
+"""
 
-
+"""
 #get category book urls
 def get_category_book_url(category_url):
     books_in_category = []
@@ -119,7 +177,7 @@ def get_book_data(book_url):
 
 
 get_book_data(book_url)
-
+"""
 
 
 """
@@ -153,7 +211,6 @@ def extract_book_data(book_url):
 
 extract_book_data(url)
 """
-
 
 
 
