@@ -7,7 +7,7 @@ import os.path as basename
 import shutil
 
 url = "http://books.toscrape.com/"
-category_url = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
+#category_url = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
 
 """
 def main():
@@ -71,7 +71,7 @@ def get_category_book_url(category_url):
             book_links == None
             break
 
-    return
+    return book_url
 
 #links = get_category_book_url(category_url)
 #print(links)
@@ -141,7 +141,7 @@ def save_book_online_data(book_data):
             csvfile.write("product_page_url, universal_product_code (upc), title, price_including_tax, price_excluding_tax, number_available, product_description, category, review_rating, image_url\n")
             csvfile.write(book_data['book_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['number_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
 
-    return
+    return file
 
 
 #save_book_online_data(book_data)
