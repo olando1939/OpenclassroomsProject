@@ -39,12 +39,12 @@ def get_all_book_categories():
         category_name = category.get_text(strip = True)
         urls.append(category_url)
 
-    return urls
+    return category_url
 
-all_urls = get_all_book_categories()
-print(all_urls)
+#all_urls = get_all_book_categories()
+#print(all_urls)
 
-get_all_book_categories()
+#get_all_book_categories()
 
 
 #get category book urls
@@ -72,12 +72,12 @@ def get_category_book_url(category_url):
             book_links == None
             break
 
-    return books_in_category
+    return
 
-links = get_category_book_url(category_url)
-print(links)
+#links = get_category_book_url(category_url)
+#print(links)
 
-get_category_book_url(category_url)
+#get_category_book_url(category_url)
 
 
 #extract product data
@@ -126,7 +126,7 @@ def get_book_data(book_url):
     return book_data
 
 
-get_book_data(book_url)
+#get_book_data(book_url)
 
 
 #save product details from category and book urls
@@ -142,10 +142,10 @@ def save_book_online_data(book_data):
             csvfile.write("product_page_url, universal_product_code (upc), title, price_including_tax, price_excluding_tax, number_available, product_description, category, review_rating, image_url\n")
             csvfile.write(book_data['book_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['number_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
 
-    return file
+    return
 
 
-save_book_online_data(book_data)
+#save_book_online_data(book_data)
 
 get_all_book_categories()
 
