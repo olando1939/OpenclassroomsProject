@@ -3,69 +3,29 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-import os
+import os.path as basename
 import shutil
 
 url = "http://books.toscrape.com/"
 category_url = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
 
-
 """
-#download one image file
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
+def main():
+    category_urls = get_all_book_categories()
+    for category_url in category_urls:
+        book_urls = get_category_book_url(category_url)
+        for book_url in book_urls:
+            book_detail = get_book_data(book_url)
 
-images = soup.findAll('img')
-example = images[0]
-url_ext = example.attrs['src']
-full_url = url + url_ext
-print(full_url)
-title = soup.select('h3')[0].text
-print(title)
-result = requests.get(full_url, stream=True)
+    headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax", "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating", "image_url"]
+    all_categories = get_all_book_categories(url)
+    category_urls = get_category_book_url(category_url)
+    book_detail = get_book_data(book_url)
+    load_data = save_book_online_data(book_data)
 
-if result.status_code == 200:
-   with open(title + "-" + "book_image_file.jpg", 'wb') as f:
-        shutil.copyfileobj(result.raw, f)
-
+main()
 """
 
-
-media = []
-#image_links = url
-
-while url != None:
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    body = soup.find('body')
-
-    next_page = soup.find('li', {'class': 'next'})
-
-    articles = body.find_all('img')
-    for link in articles:
-        page = link.attrs['src']
-        page_link = (url + page)
-        media.append(page_link)
-        #print(page_link)
-
-    if next_page != None:
-        next_page_element = next_page.find('a').get('href')
-        image_links = url.replace('index.html', str(next_page_element))
-        print(next_page)
-    else:
-        image_links == None
-        break
-    
-    
-    result = requests.get(page_link, stream=True)
-    if result.status_code == 200:
-        with open("book_image_file.jpg", 'wb') as f:
-            shutil.copyfileobj(result.raw, f)
-
-
-
-
-"""
 #get_all_categories
 def get_all_book_categories():
     result = requests.get(url)
@@ -85,9 +45,8 @@ all_urls = get_all_book_categories()
 print(all_urls)
 
 get_all_book_categories()
-"""
 
-"""
+
 #get category book urls
 def get_category_book_url(category_url):
     books_in_category = []
@@ -121,18 +80,11 @@ print(links)
 get_category_book_url(category_url)
 
 
-#extract product data for one category
-#book_url = 'http://books.toscrape.com/catalogue/in-a-dark-dark-wood_963/index.html'
-
+#extract product data
+#book_url = 'http://books.toscrape.com/catalogue/sharp-objects_997/index.html'
 def get_book_data(book_url):
 
-    books = []
-    links = get_category_book_url(category_url)
-    book_url = links
 
-    for b in book_url:
-        books.append(b)
-        
     page = requests.get(book_url)
     soup = BeautifulSoup(page.content, 'html.parser')
     body = soup.find('body')
@@ -153,64 +105,47 @@ def get_book_data(book_url):
                  'quantity_available': quantity_available, 'review_rating': review_rating, 'category': category,
                  'product_description': product_description, 'book_title': book_title, 'image_url': image_url}
 
-    headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax",
-               "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating",
-               "image_url"]
-    headers_content = {'product_page_url': url, 'universal_product_code(upc)': universal_product_code,
-                       'book_title': book_title, 'price_including_tax': price_including_tax,
-                       'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available,
-                       'product_description': product_description, 'category': category, 'review_rating': review_rating,
-                       'image_url': image_url}
+    """
+    result = requests.get(image_url, stream=True)
+    with open(book_title + "-" + "book_image_file.jpg", 'wb') as f:
+        shutil.copyfileobj(result.raw, f)
+    """
 
-    if os.path.isfile("online_book_data.csv"):
-        with open("online_book_data.csv", "a", newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writerow(headers_content)
+    if os.path.exists('./' + str(category)):
+        save_book_online_data(book_data)
+        with open(os.path.join('./' + str(category), '') + basename(image_url), 'wb') as jpgfile:
+            jpgfile.write(requests.get(image_url, stream=True).content)
+
     else:
-        with open("online_book_data.csv", "w", newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
+        os.mkdir(str(category))
+        save_book_online_data(book_data)
+        with open(os.path.join('./' + str(category), '') + basename(image_url), 'wb') as jpgfile:
+            jpgfile.write(requests.get(image_url, stream=True).content)
 
 
     return book_data
 
 
 get_book_data(book_url)
-"""
 
 
-"""
-#get product data for one book
-url = "http://books.toscrape.com/catalogue/sharp-objects_997/index.html"
-def extract_book_data(book_url):
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content,'html.parser')
-    body = soup.find('body')
+#save product details from category and book urls
+def save_book_online_data(book_data):
+    category = book_data['category']
 
-    table = soup.find(class_="table table-striped")
-    universal_product_code = table.select('td')[0].get_text(strip = True)
-    price_including_tax = table.select("td")[3].get_text(strip = True)
-    price_excluding_tax = table.select("td")[2].get_text(strip = True)
-    quantity_available = table.select("td")[5].get_text(strip = True)
-    review_rating = table.select("td")[6].get_text(strip = True)
-    category = body.find('ul', {'class':'breadcrumb'}).select('li')[2].find('a').get_text(strip = True)
-    product_description = soup.select("p")[3].get_text(strip = True)
-    book_title = soup.select('h1')[0].text
-    image_url = body.find('img').get('src').replace('../../', 'http://books.toscrape.com/')
+    if os.path.exists('./' + str('category') + '/' + 'online_book_data.csv'):
+        with open(os.path.join('./' + str('category'), '') + + str('category') + 'online_book_data.csv', "a", newline="") as csvfile:
+            csvfile.write(book_data['book_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['number_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
 
-    book_data = {'book_url': book_url, 'universal_product_code': universal_product_code, 'price_including_tax': price_including_tax, 'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available,'review_rating': review_rating, 'category': category, 'product_description': product_description, 'book_title': book_title, 'image_url': image_url}
+    else:
+        with open(os.path.join('./' + str(category), '') + str(category) + 'online_book_data.csv', 'w', newline="") as csvfile:
+            csvfile.write("product_page_url, universal_product_code (upc), title, price_including_tax, price_excluding_tax, number_available, product_description, category, review_rating, image_url\n")
+            csvfile.write(book_data['book_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['number_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
 
-    with open("online_book_data.csv","w",newline="") as csvfile:
-        headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax", "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating", "image_url"]
-        writer = csv.DictWriter(csvfile, headers)
-        writer.writeheader()
-        writer.writerow({'product_page_url': url, 'universal_product_code(upc)': universal_product_code, 'book_title': book_title, 'price_including_tax': price_including_tax, 'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available, 'product_description': product_description, 'category': category, 'review_rating': review_rating, 'image_url': image_url})
-
-    return book_data
-
-extract_book_data(url)
-"""
+    return file
 
 
+save_book_online_data(book_data)
+
+get_all_book_categories()
 
