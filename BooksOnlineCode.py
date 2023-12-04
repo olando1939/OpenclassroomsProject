@@ -25,7 +25,6 @@ def main():
 
 main()
 """
-
 #get_all_categories
 def get_all_book_categories():
     result = requests.get(url)
