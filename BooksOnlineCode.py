@@ -23,9 +23,6 @@ def main():
                 print(l)
 
 
-main()
-
-
 
 #get_all_categories
 def get_all_book_categories():
@@ -112,26 +109,25 @@ def get_book_data(book_url):
 
     if not os.path.isdir(category):
         os.mkdir(category)
-        """
-        with open(os.path.join(folder, file_name), "w", newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
-            """
-    if os.path.exists(file_name):
-        with open(os.path.join(file_name, folder), "a", newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
-    else:
         with open(os.path.join(folder, file_name), "w", newline="") as csvfile:
             writer = csv.DictWriter(csvfile, headers)
             writer.writeheader()
             writer.writerow(headers_content)
 
-            result = requests.get(image_url, stream=True)
-            with open(os.path.join(folder, file_name), 'wb') as f:
-                shutil.copyfileobj(result.raw, f)
+        if os.path.exists(file_name):
+            with open(os.path.join(file_name, folder), "a", newline="") as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=headers)
+                writer.writeheader()
+                writer.writerow(headers_content)
+        else:
+            with open(os.path.join(folder, file_name), "w", newline="") as csvfile:
+                writer = csv.DictWriter(csvfile, headers)
+                writer.writeheader()
+                writer.writerow(headers_content)
+
+    result = requests.get(image_url, stream=True)
+    with open(os.path.join(folder, image_name), 'wb') as f:
+        shutil.copyfileobj(result.raw, f)
 
 
     return book_data
@@ -140,3 +136,5 @@ get_book_data(book_url)
 
 
 #get_all_book_categories()
+
+#main()
