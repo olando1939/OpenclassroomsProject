@@ -24,7 +24,6 @@ def get_all_book_categories():
 
     return urls
 
-
 #get category book urls
 def get_category_book_url(category_url):
     books_in_category = []
@@ -52,7 +51,6 @@ def get_category_book_url(category_url):
 
     return books_in_category
 
-
 #extract product data for each book
 def get_book_data(book_url):
 
@@ -77,33 +75,30 @@ def get_book_data(book_url):
     headers_content = {'product_page_url': book_url,'universal_product_code(upc)': universal_product_code, 'book_title': book_title, 'price_including_tax': price_including_tax, 'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available, 'product_description': product_description, 'category': category, 'review_rating': review_rating, 'image_url': image_url}
 
     folder = category
-    file_name = category + "-" + "online_book_data.csv"
-    image_name = book_title + "-" + "book_image_file.jpg"
+    file_name = category + "_" + "online_book_data.csv"
+    image_name = "book_image.jpg"
 
     if not os.path.isdir(category):
         os.mkdir(category)
-        with open(os.path.join(folder, file_name), "w", newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
-
-        if os.path.exists(file_name):
-            with open(os.path.join(file_name, folder), "a", newline="") as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=headers)
-                writer.writeheader()
-                writer.writerow(headers_content)
-        else:
-            with open(os.path.join(folder, file_name), "w", newline="") as csvfile:
-                writer = csv.DictWriter(csvfile, headers)
-                writer.writeheader()
-                writer.writerow(headers_content)
 
     result = requests.get(image_url, stream=True)
-    with open(os.path.join(folder, image_name), 'wb') as f:
+    with open(os.path.join(category, image_name), 'wb') as f:
         shutil.copyfileobj(result.raw, f)
+
+    if os.path.isfile(file_name):
+        with open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer.writeheader()
+            writer.writerow(headers)
+            writer.writerow(headers_content)
+    else:
+        with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer.writerow(headers_content)
 
 
     return book_data
+
 
 def main():
     category_urls = get_all_book_categories()
@@ -115,6 +110,4 @@ def main():
             print(book_detail)
 
 main()
-
-
 
