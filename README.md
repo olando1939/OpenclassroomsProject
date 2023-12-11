@@ -30,11 +30,9 @@ _pip install requests, pip install BeautifulSoup_
 - All categories on Books to Scrape
 - Books in each category
 - save to CSV file Book details including the price of each category’s books_
+##### ***![Example of Mystery category’s CSV file](readme_image/Example_csvfile.png)***
+
 - download and save book images
-  
-##### _Example of Mystery category’s CSV file_
-
-
-##### _Example of the Mystery category’s image_
+##### ***![Example of the Mystery category’s image](readme_image/Example_book_image.png)***
  
 
