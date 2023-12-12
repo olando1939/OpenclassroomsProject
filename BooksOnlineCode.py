@@ -53,7 +53,6 @@ def get_category_book_url(category_url):
 
 
 #extract product data for each book
-book_url = "https://books.toscrape.com/catalogue/how-music-works_979/index.html"
 def get_book_data(book_url):
 
     page = requests.get(book_url)
