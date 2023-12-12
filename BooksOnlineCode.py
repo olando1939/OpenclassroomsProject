@@ -51,7 +51,9 @@ def get_category_book_url(category_url):
 
     return books_in_category
 
+
 #extract product data for each book
+book_url = "https://books.toscrape.com/catalogue/how-music-works_979/index.html"
 def get_book_data(book_url):
 
     page = requests.get(book_url)
@@ -77,6 +79,7 @@ def get_book_data(book_url):
     folder = category
     file_name = category + "_" + "online_book_data.csv"
     image_name = "book_image.jpg"
+    urls = book_data['book_url']
 
     if not os.path.isdir(category):
         os.mkdir(category)
@@ -85,15 +88,15 @@ def get_book_data(book_url):
     with open(os.path.join(category, image_name), 'wb') as f:
         shutil.copyfileobj(result.raw, f)
 
-    if os.path.isfile(file_name):
+    if os.path.exists(file_name):
+        with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            for u in urls:
+                writer.writerow(headers_content)
+    else:
         with open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writeheader()
-            writer.writerow(headers)
-            writer.writerow(headers_content)
-    else:
-        with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writerow(headers_content)
 
 
