@@ -92,16 +92,15 @@ def get_book_data(book_url):
         with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writerow(headers_content)
-            #csvfile.close()
+            # csvfile.close()
     else:
-        with (open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile):
+        with open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writeheader()
-            for row in urls:
-                writer.writerow(headers_content)
-
+            writer.writerow(headers_content)
 
     return book_data
+
 
 
 def main():
