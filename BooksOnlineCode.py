@@ -53,6 +53,7 @@ def get_category_book_url(category_url):
 
 
 #extract product data for each book
+book_url = "https://books.toscrape.com/catalogue/rip-it-up-and-start-again_986/index.html"
 def get_book_data(book_url):
 
     page = requests.get(book_url)
@@ -78,7 +79,8 @@ def get_book_data(book_url):
     folder = category
     file_name = category + "_" + "online_book_data.csv"
     image_name = "book_image.jpg"
-    urls = book_data['book_url']
+    urls = book_data['category']
+
 
     if not os.path.isdir(category):
         os.mkdir(category)
@@ -90,17 +92,19 @@ def get_book_data(book_url):
     if os.path.exists(file_name):
         with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
-            for u in urls:
-                writer.writerow(headers_content)
+            writer.writerow(headers_content)
+            csvfile.close()
     else:
-        with open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile:
+        with (open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile):
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writeheader()
-            writer.writerow(headers_content)
+            for row in urls:
+                writer.writerow(headers_content)
 
 
     return book_data
 
+get_book_data(book_url)
 
 def main():
     category_urls = get_all_book_categories()
@@ -111,5 +115,5 @@ def main():
             book_detail = get_book_data(book_url)
             print(book_detail)
 
-main()
+#main()
 
