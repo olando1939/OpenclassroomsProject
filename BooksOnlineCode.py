@@ -19,7 +19,6 @@ def get_all_book_categories():
 
     for category in navigation_panel:
         category_url = url + category.get('href')
-        category_name = category.get_text(strip = True)
         urls.append(category_url)
 
     return urls
@@ -75,42 +74,30 @@ def get_book_data(book_url):
     headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax", "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating", "image_url"]
     headers_content = {'product_page_url': book_url,'universal_product_code(upc)': universal_product_code, 'book_title': book_title, 'price_including_tax': price_including_tax, 'price_excluding_tax': price_excluding_tax, 'quantity_available': quantity_available, 'product_description': product_description, 'category': category, 'review_rating': review_rating, 'image_url': image_url}
 
-    folder = category
     file_name = category + "_" + "online_book_data.csv"
     image_name = "book_image.jpg"
-    urls = book_data['category']
-
 
     if not os.path.isdir(category):
         os.mkdir(category)
+
+    with open(os.path.join(category, file_name), "w", encoding='utf-8', newline="") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=headers)
+        writer.writeheader()
+        writer.writerow(headers_content)
 
     result = requests.get(image_url, stream=True)
     with open(os.path.join(category, image_name), 'wb') as f:
         shutil.copyfileobj(result.raw, f)
 
-    if os.path.exists(file_name):
-        with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writerow(headers_content)
-            # csvfile.close()
-    else:
-        with open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
 
     return book_data
-
-
 
 def main():
     category_urls = get_all_book_categories()
     for category_url in category_urls:
         book_urls = get_category_book_url(category_url)
-        print(book_urls)
         for book_url in book_urls:
             book_detail = get_book_data(book_url)
-            print(book_detail)
 
 main()
 
