@@ -53,7 +53,6 @@ def get_category_book_url(category_url):
 
 
 #extract product data for each book
-book_url = "https://books.toscrape.com/catalogue/rip-it-up-and-start-again_986/index.html"
 def get_book_data(book_url):
 
     page = requests.get(book_url)
@@ -93,7 +92,7 @@ def get_book_data(book_url):
         with open(os.path.join(folder, file_name), "a", encoding='utf-8', newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=headers)
             writer.writerow(headers_content)
-            csvfile.close()
+            #csvfile.close()
     else:
         with (open(os.path.join(folder, file_name), "w", encoding='utf-8', newline="") as csvfile):
             writer = csv.DictWriter(csvfile, fieldnames=headers)
@@ -104,7 +103,6 @@ def get_book_data(book_url):
 
     return book_data
 
-get_book_data(book_url)
 
 def main():
     category_urls = get_all_book_categories()
@@ -115,5 +113,5 @@ def main():
             book_detail = get_book_data(book_url)
             print(book_detail)
 
-#main()
+main()
 
