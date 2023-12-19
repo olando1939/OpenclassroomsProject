@@ -82,37 +82,37 @@ def get_book_data(book_url):
         "image_url": image_url
     }
 
+    headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax",
+               "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating",
+               "image_url"]
+    headers_content = {"product_page_url": book_url, "universal_product_code(upc)": universal_product_code,
+                       "book_title": book_title, "price_including_tax": price_including_tax,
+                       "price_excluding_tax": price_excluding_tax, "quantity_available": quantity_available,
+                       "product_description": product_description, "category": category, "review_rating": review_rating,
+                       "image_url": image_url}
+
     folder = str(category)
     file_name = str(category) + "_" + "online_book_data.csv"
     image_name = "book_image.jpg"
 
     if not os.path.exists(file_name):
         os.mkdir(category)
-        save_book_data(book_data)
         result = requests.get(image_url, stream=True)
         with open(os.path.join(folder, image_name), 'wb') as f:
             shutil.copyfileobj(result.raw, f)
 
-    return book_data
-
-
-def save_book_data(book_data):
-    category = book_data['category']
-
-    folder = str(category)
-    file_name = str(category) + "_" + "online_book_data.csv"
-
-    if os.path.exists(file_name):
-        with open(os.path.join(folder, file_name), 'a', encoding='utf-8', newline='') as csvfile:
-            csvfile.write(book_data['book_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['book_title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['quantity_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
-
+    if os.path.isfile(file_name):
+        with open(os.path.join(folder, file_name), 'a', encoding='utf-8', newline="") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer.writerow(headers_content)
     else:
-        with open(os.path.join(folder, file_name), 'w', encoding='utf-8', newline='') as csvfile:
-            csvfile.write("product_page_url, universal_product_code(upc), book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, category, review_rating, image_url\n")
-            csvfile.write(book_data['product_page_url'] + ', ' + book_data['universal_product_code'] + ', ' + book_data['book_title'] + ', ' + book_data['price_including_tax'] + ', ' + book_data['price_excluding_tax'] + ', ' + book_data['quantity_available'] + ', ' + book_data['product_description'] + ', ' + book_data['category'] + ', ' + book_data['review_rating'] + ', ' + book_data['image_url'] + '\n')
+        with open(os.path.join(folder, file_name), 'w', encoding='utf-8', newline="") as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer.writeheader()
+            writer.writerow(headers_content)
 
-    return csvfile
 
+    return book_data
 
 def main():
     category_urls = get_all_book_categories()
