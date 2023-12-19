@@ -86,19 +86,25 @@ def get_book_data(book_url):
     file_name = str(category) + "_" + "online_book_data.csv"
     image_name = "book_image.jpg"
 
-    if os.path.exists(file_name):
-        save_book_data(book_data)
-        result = requests.get(image_url, stream=True)
-        with open(os.path.join(folder, image_name), 'wb') as f:
-            shutil.copyfileobj(result.raw, f)
-
-    else:
+    if not os.path.exists(file_name):
         os.mkdir(category)
         save_book_data(book_data)
         result = requests.get(image_url, stream=True)
         with open(os.path.join(folder, image_name), 'wb') as f:
             shutil.copyfileobj(result.raw, f)
-
+    """
+    if os.path.exists(file_name):
+        save_book_data(book_data)
+        result = requests.get(image_url, stream=True)
+        with open(os.path.join(folder, image_name), 'wb') as f:
+            shutil.copyfileobj(result.raw, f)
+    else:
+        #os.mkdir(category)
+        save_book_data(book_data)
+        result = requests.get(image_url, stream=True)
+        with open(os.path.join(folder, image_name), 'wb') as f:
+            shutil.copyfileobj(result.raw, f)
+    """
 
     return book_data
 
