@@ -92,19 +92,6 @@ def get_book_data(book_url):
         result = requests.get(image_url, stream=True)
         with open(os.path.join(folder, image_name), 'wb') as f:
             shutil.copyfileobj(result.raw, f)
-    """
-    if os.path.exists(file_name):
-        save_book_data(book_data)
-        result = requests.get(image_url, stream=True)
-        with open(os.path.join(folder, image_name), 'wb') as f:
-            shutil.copyfileobj(result.raw, f)
-    else:
-        #os.mkdir(category)
-        save_book_data(book_data)
-        result = requests.get(image_url, stream=True)
-        with open(os.path.join(folder, image_name), 'wb') as f:
-            shutil.copyfileobj(result.raw, f)
-    """
 
     return book_data
 
