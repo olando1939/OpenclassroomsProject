@@ -16,7 +16,7 @@ _env\Scripts\activate.bat (windows),
 env/bin/activate (MacOS)_
 
 ### ● Install Python library:
-_pip install requests, pip install BeautifulSoup_
+_pip install -r requirement.txt_
 
 ### ● Install packages:
 - import requests
