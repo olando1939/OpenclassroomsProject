@@ -1,4 +1,5 @@
 #<<<<<<< HEAD
+import os
 
 import requests
 from bs4 import BeautifulSoup
@@ -93,26 +94,22 @@ def get_book_data(book_url):
 
     folder = str(category)
     file_name = str(category) + "_" + "online_book_data.csv"
-    image_name = "book_image.jpg"
+    image_name = str(book_title) + "_" + "book_image.jpg"
+    valid_image_name = image_name[:60].replace(':', "_").replace('#', '').replace('/','-').replace('\'', '').replace('\"', '').replace(',', '-').replace('é', 'e').replace('*','i').replace('?',"")
 
-    if not os.path.exists(file_name):
-        os.mkdir(category)
-        result = requests.get(image_url, stream=True)
-        with open(os.path.join(folder, image_name), 'wb') as f:
-            shutil.copyfileobj(result.raw, f)
+    if not os.path.exists(folder):
+        os.makedirs(category, exist_ok=True)
 
-    if os.path.isfile(file_name):
-        with open(os.path.join(folder, file_name), 'a', encoding='utf-8', newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writerow(headers_content)
-    else:
-        with open(os.path.join(folder, file_name), 'w', encoding='utf-8', newline="") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=headers)
-            writer.writeheader()
-            writer.writerow(headers_content)
+    result = requests.get(image_url, stream=True)
+    with open(os.path.join(folder, valid_image_name), 'wb') as f:
+        shutil.copyfileobj(result.raw, f)
 
+    with open(os.path.join(folder, file_name), 'a', encoding='utf-8', newline="") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=headers)
+        writer.writerow(headers_content)
 
     return book_data
+
 
 def main():
     category_urls = get_all_book_categories()
