@@ -97,15 +97,16 @@ def get_book_data(book_url):
     valid_image_name = image_name[:60].replace(':', "_").replace('#', '').replace('/','-').replace('\'', '').replace('\"', '').replace(',', '-').replace('é', 'e').replace('*','i').replace('?',"")
 
     if not os.path.exists(folder):
-        os.makedirs(category, exist_ok=True)
+        os.makedirs(category)
 
     result = requests.get(image_url, stream=True)
     with open(os.path.join(folder, valid_image_name), 'wb') as f:
         shutil.copyfileobj(result.raw, f)
 
-    with open(os.path.join(folder, file_name), 'a', encoding='utf-8', newline="") as csvfile:
+    with open(os.path.join(folder, file_name),'a', encoding='utf-8', newline="") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=headers)
         writer.writerow(headers_content)
+
 
     return book_data
 
