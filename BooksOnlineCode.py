@@ -82,15 +82,6 @@ def get_book_data(book_url):
         "image_url": image_url
     }
 
-    headers = ["product_page_url", "universal_product_code(upc)", "book_title", "price_including_tax",
-               "price_excluding_tax", "quantity_available", "product_description", "category", "review_rating",
-               "image_url"]
-    headers_content = {"product_page_url": book_url, "universal_product_code(upc)": universal_product_code,
-                       "book_title": book_title, "price_including_tax": price_including_tax,
-                       "price_excluding_tax": price_excluding_tax, "quantity_available": quantity_available,
-                       "product_description": product_description, "category": category, "review_rating": review_rating,
-                       "image_url": image_url}
-
     folder = str(category)
     image_name = str(book_title) + "_" + "book_image.jpg"
     valid_image_name = image_name[:60].replace(':', "_").replace('#', '').replace('/','-').replace('\'', '').replace('\"', '').replace(',', '-').replace('é', 'e').replace('*','i').replace('?',"")
