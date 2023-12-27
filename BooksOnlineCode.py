@@ -103,20 +103,27 @@ def get_book_data(book_url):
     with open(os.path.join(folder, valid_image_name), 'wb') as f:
         shutil.copyfileobj(result.raw, f)
 
-    with open(os.path.join(folder, file_name),'a', encoding='utf-8', newline="") as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=headers)
-        writer.writerow(headers_content)
-
-
     return book_data
 
 
 def main():
     category_urls = get_all_book_categories()
+
     for category_url in category_urls:
         book_urls = get_category_book_url(category_url)
+        all_books_data = []
         for book_url in book_urls:
             book_detail = get_book_data(book_url)
+            all_books_data.append(book_detail)
+
+            category_name = category_url.split("/")[-2].split("_")[0].replace('-', " ")
+            file_name = str(category_name) + "_" + "online_book_data.csv"
+            header = all_books_data[0].keys()
+            with open(f'{os.path.join(category_name, file_name)}.csv','w', encoding='utf-8', newline="") as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=header)
+                writer.writeheader()
+                writer.writerows(all_books_data)
+
 
 main()
 
