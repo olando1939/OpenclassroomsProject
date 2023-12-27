@@ -92,7 +92,6 @@ def get_book_data(book_url):
                        "image_url": image_url}
 
     folder = str(category)
-    file_name = str(category) + "_" + "online_book_data.csv"
     image_name = str(book_title) + "_" + "book_image.jpg"
     valid_image_name = image_name[:60].replace(':', "_").replace('#', '').replace('/','-').replace('\'', '').replace('\"', '').replace(',', '-').replace('é', 'e').replace('*','i').replace('?',"")
 
