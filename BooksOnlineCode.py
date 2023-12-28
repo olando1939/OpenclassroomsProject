@@ -45,8 +45,7 @@ def get_category_book_url(category_url):
             book_links = category_url.replace('index.html', str(next_page_element))
 
         else:
-            book_links == None
-            break
+            book_links = None
 
     return books_in_category
 
@@ -114,6 +113,4 @@ def main():
                 writer.writeheader()
                 writer.writerows(all_books_data)
 
-
 main()
-
