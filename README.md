@@ -4,32 +4,31 @@
 #### Project to create Books Online price monitoring system to extract book data on Books to Scrape: http://books.toscrape.com/.
 #### The following book details extraction required: product_page_url, universal_ product_code (upc), book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, category, review_rating, and image_url.
 
-## **How to run code?**
-### ● Create a directory as your local repository (e.g., Books_Online_Project)
-### ● Create a code file (e.g., BooksOnlineCode.py)
+## **How to run the code?**
+### ● Clone the repository (Windows and MacOS)
+### ● In the terminal, navigate to your project folder
 
-### ● Create a virtual Environment by:
-  _Python3 – m venv env_
+### ● Create a virtual environment by running the command:
+  _Python3 – m venv env (Windows and MacOS)_  
 
-### ● Activate the virtual environment
-_env\Scripts\activate.bat (windows),
+### ● Activate the virtual environment by running the command:
+_env\Scripts\activate.bat (Windows),
 env/bin/activate (MacOS)_
 
 ### ● Install Python library:
-_pip install -r requirement.txt_
+_pip install -r requirement.txt (Windows and MacOS)_
+### ● Import packages:
+    - import requests
+    - from bs4 import BeautifulSoup
+    - import csv
+    - import os.path
+    - import shutil
 
-### ● Install packages:
-- import requests
-- from bs4 import BeautifulSoup
-- import csv
-- import os.path
-- import shutil
+### ● Run the program
 
-### ● copy code to your environment from https://github.com/olando1939/OpenclassroomsProject.git: 
-##### Run the main function of code to extract, transform, and load:
-- All categories on Books to Scrape
-- Books in each category
-- save to CSV file Book details including the price of each category’s books_
+##### The program will extract, transform, and load:
+- All book categories on Books to Scrape
+- Save to CSV file each category book detail and their downloaded book images
 ##### ***![Example of Mystery category’s CSV file](readme_image/Example_csvfile.png)***
 
 - download and save book images
